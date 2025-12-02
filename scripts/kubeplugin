@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Аргументи:
+# $1 = namespace
+# $2 = resource type (наприклад, pods)
+# $3 = команда (наприклад, get або top)
+
+NAMESPACE=$1
+RESOURCE_TYPE=$2
+COMMAND=$3
+
+# Виконати kubectl
+kubectl $COMMAND $RESOURCE_TYPE -n $NAMESPACE | tail -n +2 | while read line
+do
+  NAME=$(echo $line | awk '{print $1}')
+  CPU=$(echo $line | awk '{print $2}')
+  MEMORY=$(echo $line | awk '{print $3}')
+
+  echo "$RESOURCE_TYPE, $NAMESPACE, $NAME, $CPU, $MEMORY"
+done
